@@ -72,6 +72,8 @@ void Server_ProtocolHandler::playerRemovedFromGame(Server_Game *game)
 
 ResponseCode Server_ProtocolHandler::processCommandHelper(Command *command, CommandContainer *cont)
 {
+	if (authState == UserIsBanned)
+		return RespUserIsBanned;
 	RoomCommand *roomCommand = qobject_cast<RoomCommand *>(command);
 	if (roomCommand) {
 		qDebug() << "received RoomCommand: roomId =" << roomCommand->getRoomId();
@@ -291,6 +293,8 @@ ResponseCode Server_ProtocolHandler::cmdLogin(Command_Login *cmd, CommandContain
 		return RespWrongPassword;
 	if (authState == WouldOverwriteOldSession)
 		return RespWouldOverwriteOldSession;
+	if (authState == UserIsBanned)
+		return RespUserIsBanned;
 
 	ProtocolItem *serverMessage = new Event_ServerMessage(server->getLoginMessage());
 	if (getCompressionSupport())
@@ -352,6 +356,8 @@ ResponseCode Server_ProtocolHandler::cmdMessage(Command_Message *cmd, CommandCon
 {
 	if (authState == PasswordWrong)
 		return RespLoginNeeded;
+	if (authState == UserIsBanned)
+		return RespUserIsBanned;
 	
 	QString receiver = cmd->getUserName();
 	Server_ProtocolHandler *userHandler = server->getUsers().value(receiver);
@@ -370,6 +376,8 @@ ResponseCode Server_ProtocolHandler::cmdGetGamesOfUser(Command_GetGamesOfUser *c
 {
 	if (authState == PasswordWrong)
 		return RespLoginNeeded;
+	if (authState == UserIsBanned)
+		return RespUserIsBanned;
 	
 	server->serverMutex.lock();
 	if (!server->getUsers().contains(cmd->getUserName()))
@@ -398,6 +406,8 @@ ResponseCode Server_ProtocolHandler::cmdGetUserInfo(Command_GetUserInfo *cmd, Co
 {
 	if (authState == PasswordWrong)
 		return RespLoginNeeded;
+	if (authState == UserIsBanned)
+		return RespUserIsBanned;
 	
 	ServerInfo_User *result;
 	if (cmd->getUserName().isEmpty())
@@ -417,6 +427,8 @@ ResponseCode Server_ProtocolHandler::cmdListRooms(Command_ListRooms * /*cmd*/, C
 {
 	if (authState == PasswordWrong)
 		return RespLoginNeeded;
+	if (authState == UserIsBanned)
+		return RespUserIsBanned;
 	
 	QList<ServerInfo_Room *> eventRoomList;
 	QMapIterator<int, Server_Room *> roomIterator(server->getRooms());
@@ -432,6 +444,8 @@ ResponseCode Server_ProtocolHandler::cmdJoinRoom(Command_JoinRoom *cmd, CommandC
 {
 	if (authState == PasswordWrong)
 		return RespLoginNeeded;
+	if (authState == UserIsBanned)
+		return RespUserIsBanned;
 	
 	if (rooms.contains(cmd->getRoomId()))
 		return RespContextError;
@@ -492,6 +506,8 @@ ResponseCode Server_ProtocolHandler::cmdListUsers(Command_ListUsers * /*cmd*/, C
 {
 	if (authState == PasswordWrong)
 		return RespLoginNeeded;
+	if (authState == UserIsBanned)
+		return RespUserIsBanned;
 	
 	QList<ServerInfo_User *> resultList;
 	QMapIterator<QString, Server_ProtocolHandler *> userIterator = server->getUsers();
@@ -511,6 +527,8 @@ ResponseCode Server_ProtocolHandler::cmdCreateGame(Command_CreateGame *cmd, Comm
 {
 	if (authState == PasswordWrong)
 		return RespLoginNeeded;
+	if (authState == UserIsBanned)
+		return RespUserIsBanned;
 
 	if (server->getMaxGamesPerUser() > 0)
 		if (room->getGamesCreatedByUser(userInfo->getName()) >= server->getMaxGamesPerUser())
@@ -543,6 +561,8 @@ ResponseCode Server_ProtocolHandler::cmdJoinGame(Command_JoinGame *cmd, CommandC
 {
 	if (authState == PasswordWrong)
 		return RespLoginNeeded;
+	if (authState == UserIsBanned)
+		return RespUserIsBanned;
 	
 	QMutexLocker gameListLocker(&gameListMutex);
 	

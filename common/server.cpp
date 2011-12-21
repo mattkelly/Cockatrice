@@ -53,7 +53,7 @@ AuthenticationResult Server::loginUser(Server_ProtocolHandler *session, QString 
 	if (name.size() > 35)
 		name = name.left(35);
 	AuthenticationResult authState = checkUserPassword(session, name, password);
-	if (authState == PasswordWrong)
+	if ((authState == PasswordWrong) || (authState == UserIsBanned))
 		return authState;
 	
 	ServerInfo_User *data = getUserData(name);

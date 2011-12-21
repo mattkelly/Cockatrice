@@ -11,7 +11,11 @@ class Server_Room;
 class Server_ProtocolHandler;
 class ServerInfo_User;
 
-enum AuthenticationResult { PasswordWrong = 0, PasswordRight = 1, UnknownUser = 2, WouldOverwriteOldSession = 3 };
+enum AuthenticationResult { PasswordWrong = 0,
+							PasswordRight = 1,
+							UnknownUser = 2,
+							WouldOverwriteOldSession = 3,
+							UserIsBanned = 4 };
 
 class Server : public QObject
 {

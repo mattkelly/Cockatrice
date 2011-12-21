@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2008 by Max-Wilhelm Bruker   *
- *   brukie@gmx.net   *
+ *   Copyright (C) 2008 by Max-Wilhelm Bruker                              *
+ *   brukie@gmx.net                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -200,6 +200,7 @@ void MainWindow::serverError(ResponseCode r)
 {
 	switch (r) {
 		case RespWrongPassword: QMessageBox::critical(this, tr("Error"), tr("Invalid login data.")); break;
+		case RespUserIsBanned: QMessageBox::critical(this, tr("Error"), tr("You are banned.")); break;
 		case RespWouldOverwriteOldSession: QMessageBox::critical(this, tr("Error"), tr("There is already an active session using this user name.\nPlease close that session first and re-login.")); break;
 		default: ;
 	}

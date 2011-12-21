@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2008 by Max-Wilhelm Bruker   *
- *   brukie@laptop   *
+ *   Copyright (C) 2008 by Max-Wilhelm Bruker                              *
+ *   brukie@laptop                                                         *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -186,7 +186,7 @@ AuthenticationResult Servatrice::checkUserPassword(Server_ProtocolHandler *handl
 		if (ipBanQuery.next())
 			if (ipBanQuery.value(0).toInt() || ipBanQuery.value(1).toInt()) {
 				qDebug("Login denied: banned by address");
-				return PasswordWrong;
+				return UserIsBanned;
 			}
 		
 		QSqlQuery nameBanQuery;
@@ -201,7 +201,7 @@ AuthenticationResult Servatrice::checkUserPassword(Server_ProtocolHandler *handl
 		if (nameBanQuery.next())
 			if (nameBanQuery.value(0).toInt() || nameBanQuery.value(1).toInt()) {
 				qDebug("Login denied: banned by name");
-				return PasswordWrong;
+				return UserIsBanned;
 			}
 		
 		QSqlQuery passwordQuery;
